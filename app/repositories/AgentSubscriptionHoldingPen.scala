@@ -57,7 +57,7 @@ class AgentSubscriptionHoldingPen @Inject()(config: AppConfig)(implicit mongo: R
     dropDups = false,
     sparse = false,
     version = None,
-    options = BSONDocument("expireAfterSeconds" -> config.agentHoldingPenExpiryDays * 24 * 60)
+    options = BSONDocument("expireAfterSeconds" -> config.agentHoldingPenExpiryDays * 24 * 60 * 60)
   )
 
   private def setIndex(): Unit = {
