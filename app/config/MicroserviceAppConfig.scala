@@ -31,8 +31,6 @@ class MicroserviceAppConfig @Inject()(val app: Application) extends AppConfig wi
   val configuration = app.configuration
   override val mode = app.mode
 
-  private def loadConfig(key: String) = configuration.getString(key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
-
   override lazy val authURL = baseUrl("auth")
 
   override val agentHoldingPenExpiryDays: Int = {
