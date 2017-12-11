@@ -1,9 +1,6 @@
-import sbt._
-import play.sbt.PlayImport._
 import play.core.PlayVersion
-import uk.gov.hmrc.SbtAutoBuildPlugin
-import uk.gov.hmrc.sbtdistributables.SbtDistributablesPlugin
-import uk.gov.hmrc.versioning.SbtGitVersioning
+import play.sbt.PlayImport._
+import sbt._
 
 object MicroServiceBuild extends Build with MicroService {
 
@@ -11,17 +8,28 @@ object MicroServiceBuild extends Build with MicroService {
 
   override lazy val appDependencies: Seq[ModuleID] = compile ++ test()
 
+  private val bootstrapVersion = "1.1.0"
+  private val reactiveMongoVersion = "6.1.0"
+
+  private val hmrcTestVersion = "3.0.0"
+  private val scalaTestVersion = "3.0.1"
+  private val pegdownVersion = "1.6.0"
+  private val mockitoVersion = "2.7.17"
+  private val scalaTestPlusVersion = "2.0.0"
+
   val compile = Seq(
-    "uk.gov.hmrc" %% "play-reactivemongo" % "6.1.0",
+    "uk.gov.hmrc" %% "play-reactivemongo" % reactiveMongoVersion,
     ws,
-    "uk.gov.hmrc" %% "bootstrap-play-25" % "1.1.0"
+    "uk.gov.hmrc" %% "bootstrap-play-25" % bootstrapVersion
   )
 
   def test(scope: String = "test,it") = Seq(
-    "uk.gov.hmrc" %% "hmrctest" % "3.0.0" % scope,
-    "org.scalatest" %% "scalatest" % "2.2.6" % scope,
-    "org.pegdown" % "pegdown" % "1.6.0" % scope,
-    "com.typesafe.play" %% "play-test" % PlayVersion.current % scope
+    "uk.gov.hmrc" %% "hmrctest" % hmrcTestVersion % scope,
+    "org.scalatest" %% "scalatest" % scalaTestVersion % scope,
+    "org.pegdown" % "pegdown" % pegdownVersion % scope,
+    "com.typesafe.play" %% "play-test" % PlayVersion.current % scope,
+    "org.mockito" % "mockito-core" % mockitoVersion % scope,
+    "org.scalatestplus.play" %% "scalatestplus-play" % scalaTestPlusVersion % scope
   )
 
 }

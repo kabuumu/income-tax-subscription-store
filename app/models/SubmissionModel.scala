@@ -14,21 +14,19 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.incometaxsubscriptionstore.controllers
+package models
 
-import javax.inject.Singleton
+import play.api.libs.json.Json
 
-import uk.gov.hmrc.play.bootstrap.controller.BaseController
-import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
-import play.api.mvc._
 
-import scala.concurrent.Future
+case class SubmissionModel(nino: String,
+                           incomeSource: IncomeSourceType,
+                           arn: String,
+                           accountingPeriodStart: Option[DateModel] = None,
+                           accountingPeriodEnd: Option[DateModel] = None,
+                           tradingName: Option[String] = None,
+                           cashOrAccruals: Option[String] = None)
 
-@Singleton()
-class MicroserviceHelloWorld extends BaseController {
-
-	def hello() = Action.async { implicit request =>
-		Future.successful(Ok("Hello world"))
-	}
-
+object SubmissionModel {
+  implicit val format = Json.format[SubmissionModel]
 }
