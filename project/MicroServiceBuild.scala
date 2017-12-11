@@ -8,6 +8,7 @@ object MicroServiceBuild extends Build with MicroService {
 
   override lazy val appDependencies: Seq[ModuleID] = compile ++ test()
 
+  private val domainVersion = "5.0.0"
   private val bootstrapVersion = "1.1.0"
   private val reactiveMongoVersion = "6.1.0"
 
@@ -18,9 +19,10 @@ object MicroServiceBuild extends Build with MicroService {
   private val scalaTestPlusVersion = "2.0.0"
 
   val compile = Seq(
-    "uk.gov.hmrc" %% "play-reactivemongo" % reactiveMongoVersion,
     ws,
-    "uk.gov.hmrc" %% "bootstrap-play-25" % bootstrapVersion
+    "uk.gov.hmrc" %% "bootstrap-play-25" % bootstrapVersion,
+    "uk.gov.hmrc" %% "domain" % domainVersion,
+    "uk.gov.hmrc" %% "play-reactivemongo" % reactiveMongoVersion
   )
 
   def test(scope: String = "test,it") = Seq(
