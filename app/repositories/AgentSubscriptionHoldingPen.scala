@@ -16,6 +16,7 @@
 
 package repositories
 
+import java.util.concurrent.TimeUnit
 import javax.inject.{Inject, Singleton}
 
 import config.AppConfig
@@ -57,7 +58,7 @@ class AgentSubscriptionHoldingPen @Inject()(config: AppConfig)(implicit mongo: R
     dropDups = false,
     sparse = false,
     version = None,
-    options = BSONDocument("expireAfterSeconds" -> config.agentHoldingPenExpiryDays * 24 * 60 * 60)
+    options = BSONDocument("expireAfterSeconds" -> TimeUnit.DAYS.toSeconds(config.agentHoldingPenExpiryDays))
   )
 
   private def setIndex(): Unit = {
