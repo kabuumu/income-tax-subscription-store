@@ -14,20 +14,12 @@
  * limitations under the License.
  */
 
-package services
+package utils
 
-import javax.inject.{Inject, Singleton}
+import akka.actor.ActorSystem
+import akka.stream.ActorMaterializer
 
-import models.AgentSubscriptionModel
-import repositories.AgentSubscriptionHoldingPen
-
-import scala.concurrent.Future
-
-
-@Singleton
-class ClientSubscriptionDataService @Inject()(agentSubscriptionHoldingPen: AgentSubscriptionHoldingPen) {
-
-  def store(agentSubscriptionModel: AgentSubscriptionModel): Future[AgentSubscriptionModel] = agentSubscriptionHoldingPen.store(agentSubscriptionModel)
-
-  def retrieveSubscriptionData(nino: String): Future[Option[AgentSubscriptionModel]] = agentSubscriptionHoldingPen.retrieve(nino)
+trait MaterializerSupport {
+  implicit val system = ActorSystem("Sys")
+  implicit val materializer = ActorMaterializer()
 }

@@ -18,31 +18,43 @@ package controllers
 
 import javax.inject.{Inject, Singleton}
 
-import play.api.libs.json.Json
+import models.AgentSubscriptionModel
+import play.api.libs.json.{JsSuccess, JsValue, Json}
 import play.api.mvc.{Action, AnyContent}
 import services.{AuthService, ClientSubscriptionDataService}
 import uk.gov.hmrc.play.bootstrap.controller.BaseController
 
-import scala.concurrent.ExecutionContext
-
+import scala.concurrent.{ExecutionContext, Future}
 
 
 @Singleton
 class ClientSubscriptionDataController @Inject()(authService: AuthService,
                                                  clientSubscriptionService: ClientSubscriptionDataService,
-                                                 implicit val ec: ExecutionContext) extends  BaseController{
+                                                 implicit val ec: ExecutionContext) extends BaseController {
 
   import authService._
 
-  def retrieveSubscriptionData(nino: String): Action[AnyContent] = {
-      Action.async { implicit request =>
-        //authorised() {
-          clientSubscriptionService.retrieveSubscriptionData(nino) map {
-            case Some(subscriptionData) => Ok(Json.toJson(subscriptionData))
-            case None => BadRequest
-          }
-        //}
+  def store(): Action[JsValue] = Action.async(parse.json) { implicit request =>
+    authorised() {
+      val json = request.body
+      Json.fromJson[AgentSubscriptionModel](json) match {
+        case JsSuccess(submission, _) =>
+          clientSubscriptionService.store(submission) map (storedResult => Created(Json.toJson(storedResult)))
+        case _ => Future.successful(BadRequest)
       }
+    }
+  }
+
+
+  def retrieveSubscriptionData(nino: String): Action[AnyContent] = {
+    Action.async { implicit request =>
+      //authorised() {
+      clientSubscriptionService.retrieveSubscriptionData(nino) map {
+        case Some(subscriptionData) => Ok(Json.toJson(subscriptionData))
+        case None => BadRequest
+      }
+      //}
+    }
   }
 }
 
