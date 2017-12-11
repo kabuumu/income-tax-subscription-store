@@ -47,14 +47,14 @@ class ClientSubscriptionDataController @Inject()(authService: AuthService,
 
 
   def retrieveSubscriptionData(nino: String): Action[AnyContent] = {
-    Action.async { implicit request =>
-      //authorised() {
-      clientSubscriptionService.retrieveSubscriptionData(nino) map {
-        case Some(subscriptionData) => Ok(Json.toJson(subscriptionData))
-        case None => BadRequest
+      Action.async { implicit request =>
+        authorised() {
+          clientSubscriptionService.retrieveSubscriptionData(nino) map {
+            case Some(subscriptionData) => Ok(Json.toJson(subscriptionData))
+            case None => BadRequest
+          }
+        }
       }
-      //}
-    }
   }
 }
 
