@@ -32,4 +32,6 @@ case class AgentSubscriptionModel(arn: String,
 
 object AgentSubscriptionModel {
   implicit val format = Json.format[AgentSubscriptionModel]
+
+
 }
