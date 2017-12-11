@@ -38,14 +38,10 @@ case class DateModel(day: String, month: String, year: String) {
 
   def diffInMonth(that: DateModel): Int = {
     import java.time.temporal.ChronoUnit
-    ChronoUnit.MONTHS.between(this, that).toInt
+    ChronoUnit.MONTHS.between(this.toLocalDate, that.toLocalDate).toInt
   }
 }
 
 object DateModel {
-  implicit def dateConvert(date: DateModel): LocalDate = date.toLocalDate
-
-  implicit def dateConvert(date: LocalDate): DateModel = DateModel(date.getDayOfMonth.toString, date.getMonthValue.toString, date.getYear.toString)
-
   implicit val format = Json.format[DateModel]
 }
