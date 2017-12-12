@@ -20,14 +20,13 @@ import config.AppConfig
 import helpers.ComponentSpecBase
 import helpers.IntegrationTestConstants._
 import helpers.servicemocks._
-import org.scalatest.BeforeAndAfterEach
 import play.api.http.Status._
 import play.modules.reactivemongo.ReactiveMongoComponent
 import repositories.AgentSubscriptionHoldingPen
 
 import scala.concurrent.ExecutionContext
 
-class ClientSubscriptionDataControllerISpec extends ComponentSpecBase with BeforeAndAfterEach {
+class ClientSubscriptionDataControllerSpec extends ComponentSpecBase {
   implicit lazy val mongo = app.injector.instanceOf[ReactiveMongoComponent]
   implicit lazy val ec = app.injector.instanceOf[ExecutionContext]
   lazy val appConfig = app.injector.instanceOf[AppConfig]

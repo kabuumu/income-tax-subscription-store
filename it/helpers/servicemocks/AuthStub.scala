@@ -17,29 +17,13 @@
 package helpers.servicemocks
 
 import com.github.tomakehurst.wiremock.stubbing.StubMapping
-import play.api.http.HeaderNames
 import play.api.http.Status._
 import play.api.libs.json.{JsObject, Json}
 
 object AuthStub extends WireMockMethods {
-  val authIDs = "/uri/to/ids"
+
   val authority = "/auth/authorise"
-
-  val gatewayID = "12345"
   val internalID = "internal"
-  val externalID = "external"
-
-  def stubAuthSuccess(): StubMapping = {
-    when(method = POST, uri = authority)
-      .thenReturn(status = OK, body = successfulAuthResponse)
-  }
-
-  private def exceptionHeaders(value: String) = Map(HeaderNames.WWW_AUTHENTICATE -> s"""MDTP detail="$value"""")
-
-  def stubAuthFailure(): StubMapping = {
-    when(method = POST, uri = authority)
-      .thenReturn(status = UNAUTHORIZED, headers = exceptionHeaders("MissingBearerToken"))
-  }
 
   val successfulAuthResponse: JsObject = {
     Json.obj(
@@ -47,4 +31,8 @@ object AuthStub extends WireMockMethods {
     )
   }
 
+  def stubAuthSuccess(): StubMapping = {
+    when(method = POST, uri = authority)
+      .thenReturn(status = OK, body = successfulAuthResponse)
+  }
 }

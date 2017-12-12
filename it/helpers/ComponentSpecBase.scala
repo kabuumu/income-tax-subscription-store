@@ -16,23 +16,22 @@
 
 package helpers
 
-import helpers.servicemocks.{AuditStub, WireMockMethods}
+import helpers.servicemocks.AuditStub
 import models.AgentSubscriptionModel
 import org.scalatest._
-import org.scalatest.concurrent.{Eventually, IntegrationPatience, ScalaFutures}
 import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.libs.json.{Json, Writes}
+import play.api.libs.json.Writes
 import play.api.libs.ws.WSResponse
 import play.api.{Application, Environment, Mode}
 import uk.gov.hmrc.http.HeaderCarrier
 import uk.gov.hmrc.play.test.UnitSpec
 
 trait ComponentSpecBase extends UnitSpec
-  with GivenWhenThen with TestSuite
-  with GuiceOneServerPerSuite with ScalaFutures with IntegrationPatience with Matchers with Assertions
-  with WiremockHelper with BeforeAndAfterEach with BeforeAndAfterAll with Eventually
-  with CustomMatchers with WireMockMethods {
+  with GivenWhenThen
+  with GuiceOneServerPerSuite
+  with WiremockHelper with BeforeAndAfterEach with BeforeAndAfterAll
+  with CustomMatchers {
 
   override implicit lazy val app: Application = new GuiceApplicationBuilder()
     .in(Environment.simple(mode = Mode.Dev))

@@ -15,19 +15,12 @@
  */
 
 package helpers.servicemocks
-
-import uk.gov.hmrc.http.HeaderCarrier
+import play.api.test.Helpers._
 
 object AuditStub extends WireMockMethods {
-  val appName = "income-tax-subscription-store"
 
   def stubAuditing(): Unit =
     when(method = POST, uri = "/write/audit")
-      .thenReturn(status = 200, body = """{"x":2}""")
+      .thenReturn(status = OK, body = """{"x":2}""")
 
-  def verifyAudit()(implicit hc: HeaderCarrier): Unit = {
-    //We cannot verify content of audit body without string matching/regex
-    //It is tested in more detail at unit level
-    verify(method = POST, uri = "/write/audit")
-  }
 }
