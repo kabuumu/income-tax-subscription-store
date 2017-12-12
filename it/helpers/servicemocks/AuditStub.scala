@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
-package models
-import play.api.libs.json.Json
+package helpers.servicemocks
+import play.api.test.Helpers._
 
-case class DateModel(day: String, month: String, year: String)
+object AuditStub extends WireMockMethods {
 
-object DateModel {
-  implicit val format = Json.format[DateModel]
+  def stubAuditing(): Unit =
+    when(method = POST, uri = "/write/audit")
+      .thenReturn(status = OK, body = """{"x":2}""")
+
 }

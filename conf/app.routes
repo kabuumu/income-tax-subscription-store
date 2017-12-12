@@ -1,3 +1,6 @@
 # microservice specific routes
 
-GET        /hello-world             @uk.gov.hmrc.incometaxsubscriptionstore.controllers.MicroserviceHelloWorld.hello
+POST        /client-subscription-data              @controllers.ClientSubscriptionDataController.store
+
+GET         /client-subscription-data/:nino        @controllers.ClientSubscriptionDataController.retrieveSubscriptionData(nino: String)
+

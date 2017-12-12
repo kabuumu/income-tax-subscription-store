@@ -14,21 +14,12 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.incometaxsubscriptionstore.controllers
+package services
 
-import javax.inject.Singleton
+import javax.inject.{Inject, Singleton}
 
-import uk.gov.hmrc.play.bootstrap.controller.BaseController
-import uk.gov.hmrc.play.http.logging.MdcLoggingExecutionContext._
-import play.api.mvc._
+import uk.gov.hmrc.auth.core.AuthorisedFunctions
+import uk.gov.hmrc.auth.core.AuthConnector
 
-import scala.concurrent.Future
-
-@Singleton()
-class MicroserviceHelloWorld extends BaseController {
-
-	def hello() = Action.async { implicit request =>
-		Future.successful(Ok("Hello world"))
-	}
-
-}
+@Singleton
+class AuthService @Inject()(val authConnector: AuthConnector) extends AuthorisedFunctions

@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package models
-import play.api.libs.json.Json
+package utils
 
-case class DateModel(day: String, month: String, year: String)
+import akka.actor.ActorSystem
+import akka.stream.ActorMaterializer
 
-object DateModel {
-  implicit val format = Json.format[DateModel]
+trait MaterializerSupport {
+  implicit val system = ActorSystem("Sys")
+  implicit val materializer = ActorMaterializer()
 }

@@ -14,11 +14,20 @@
  * limitations under the License.
  */
 
-package models
-import play.api.libs.json.Json
+package helpers
 
-case class DateModel(day: String, month: String, year: String)
+import org.scalatest.matchers._
+import play.api.libs.ws.WSResponse
 
-object DateModel {
-  implicit val format = Json.format[DateModel]
+trait CustomMatchers {
+  def httpStatus(expectedValue: Int): HavePropertyMatcher[WSResponse, Int] =
+    new HavePropertyMatcher[WSResponse, Int] {
+      def apply(response: WSResponse) =
+        HavePropertyMatchResult(
+          response.status == expectedValue,
+          "httpStatus",
+          expectedValue,
+          response.status
+        )
+    }
 }

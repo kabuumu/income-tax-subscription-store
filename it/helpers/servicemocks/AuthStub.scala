@@ -14,11 +14,25 @@
  * limitations under the License.
  */
 
-package models
-import play.api.libs.json.Json
+package helpers.servicemocks
 
-case class DateModel(day: String, month: String, year: String)
+import com.github.tomakehurst.wiremock.stubbing.StubMapping
+import play.api.http.Status._
+import play.api.libs.json.{JsObject, Json}
 
-object DateModel {
-  implicit val format = Json.format[DateModel]
+object AuthStub extends WireMockMethods {
+
+  val authority = "/auth/authorise"
+  val internalID = "internal"
+
+  val successfulAuthResponse: JsObject = {
+    Json.obj(
+      "internalId" -> internalID
+    )
+  }
+
+  def stubAuthSuccess(): StubMapping = {
+    when(method = POST, uri = authority)
+      .thenReturn(status = OK, body = successfulAuthResponse)
+  }
 }

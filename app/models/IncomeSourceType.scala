@@ -54,18 +54,4 @@ object IncomeSourceType {
 
   implicit val format: Format[IncomeSourceType] = Format(reader, writer)
 
-  def apply(incomeSource: String): IncomeSourceType = incomeSource match {
-    case `business` => Business
-    case `property` => Property
-    case `both` => Both
-    case `other` => Other
-  }
-
-  def unapply(incomeSourceType: IncomeSourceType): Option[String] = incomeSourceType match {
-    case Business => Some(business)
-    case Property => Some(property)
-    case Both => Some(both)
-    case Other => Some(other)
-  }
-
 }

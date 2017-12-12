@@ -14,11 +14,20 @@
  * limitations under the License.
  */
 
-package models
-import play.api.libs.json.Json
+package services
 
-case class DateModel(day: String, month: String, year: String)
+import javax.inject.{Inject, Singleton}
 
-object DateModel {
-  implicit val format = Json.format[DateModel]
+import models.AgentSubscriptionModel
+import repositories.AgentSubscriptionHoldingPen
+
+import scala.concurrent.Future
+
+
+@Singleton
+class ClientSubscriptionDataService @Inject()(agentSubscriptionHoldingPen: AgentSubscriptionHoldingPen) {
+
+  def store(agentSubscriptionModel: AgentSubscriptionModel): Future[AgentSubscriptionModel] = agentSubscriptionHoldingPen.store(agentSubscriptionModel)
+
+  def retrieveSubscriptionData(nino: String): Future[Option[AgentSubscriptionModel]] = agentSubscriptionHoldingPen.retrieve(nino)
 }

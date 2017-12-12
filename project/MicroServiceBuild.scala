@@ -6,7 +6,7 @@ object MicroServiceBuild extends Build with MicroService {
 
   val appName = "income-tax-subscription-store"
 
-  override lazy val appDependencies: Seq[ModuleID] = compile ++ test()
+  override lazy val appDependencies: Seq[ModuleID] = compile ++ test() ++ integrationTest()
 
   private val domainVersion = "5.0.0"
   private val bootstrapVersion = "1.1.0"
@@ -17,6 +17,8 @@ object MicroServiceBuild extends Build with MicroService {
   private val pegdownVersion = "1.6.0"
   private val mockitoVersion = "2.7.17"
   private val scalaTestPlusVersion = "2.0.0"
+
+  private val wiremockVersion = "2.5.1"
 
   val compile = Seq(
     ws,
@@ -32,6 +34,10 @@ object MicroServiceBuild extends Build with MicroService {
     "com.typesafe.play" %% "play-test" % PlayVersion.current % scope,
     "org.mockito" % "mockito-core" % mockitoVersion % scope,
     "org.scalatestplus.play" %% "scalatestplus-play" % scalaTestPlusVersion % scope
+  )
+
+  def integrationTest(scope: String = "it") = Seq(
+    "com.github.tomakehurst" % "wiremock" % wiremockVersion % scope
   )
 
 }
