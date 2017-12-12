@@ -71,4 +71,35 @@ class ClientSubscriptionDataControllerSpec extends UnitSpec with MaterializerSup
     }
   }
 
+
+  "retrieveSubscriptionData" should {
+    "return 'Ok' if the client subscription data is successfully retrieved" in {
+      mockAuthSuccess()
+      mockRetrieveFound(testNino)(testAgentBothSubscription)
+
+      val res: Future[Result] = TestClientSubscriptionDataController.retrieveSubscriptionData(testNino)(FakeRequest())
+
+      status(res) shouldBe OK
+    }
+
+    "return 'BadRequest' if the client subscription data cannot be found" in {
+      mockAuthSuccess()
+      mockRetrieveNotFound(testNino)
+
+      val res: Future[Result] = TestClientSubscriptionDataController.retrieveSubscriptionData(testNino)(FakeRequest())
+
+      status(res) shouldBe BAD_REQUEST
+    }
+
+    "fail if exception occurs" in {
+      mockAuthSuccess()
+      mockRetrieveFailure(testNino)
+
+      val res: Future[Result] = TestClientSubscriptionDataController.retrieveSubscriptionData(testNino)(FakeRequest())
+
+      intercept[Exception](await(res)) shouldBe testException
+
+    }
+  }
+
 }

@@ -40,11 +40,23 @@ trait MockClientSubscriptionDataService extends UnitSpec with MockitoSugar with 
   private def mockStore(agentSubscriptionModel: AgentSubscriptionModel)(result: Future[AgentSubscriptionModel]): Unit =
     when(mockClientSubscriptionDataService.store(ArgumentMatchers.eq(agentSubscriptionModel))).thenReturn(result)
 
+  def mockRetrieve(nino: String)(result: Future[Option[AgentSubscriptionModel]]): Unit =
+    when(mockClientSubscriptionDataService.retrieveSubscriptionData(ArgumentMatchers.eq(nino))).thenReturn(result)
+
   def mockStoreSuccess(agentSubscriptionModel: AgentSubscriptionModel): Unit =
     mockStore(agentSubscriptionModel)(Future.successful(agentSubscriptionModel))
 
   def mockStoreFailed(agentSubscriptionModel: AgentSubscriptionModel): Unit =
     mockStore(agentSubscriptionModel)(Future.failed(testException))
+
+  def mockRetrieveFound(nino: String)(agentSubscriptionModel: AgentSubscriptionModel): Unit =
+    mockRetrieve(nino)(Future.successful(Some(agentSubscriptionModel)))
+
+  def mockRetrieveNotFound(nino: String): Unit =
+    mockRetrieve(nino)(Future.successful(None))
+
+  def mockRetrieveFailure(nino: String): Unit =
+    mockRetrieve(nino)(Future.failed(testException))
 
 }
 

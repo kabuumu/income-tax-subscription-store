@@ -18,7 +18,7 @@ package services
 
 import services.mocks.TestClientSubscriptionDataService
 import uk.gov.hmrc.play.test.UnitSpec
-import utils.TestConstants.{testAgentBothSubscription, testException}
+import utils.TestConstants.{testAgentBothSubscription, testException, testNino}
 
 class ClientSubscriptionDataServiceSpec extends UnitSpec with TestClientSubscriptionDataService {
 
@@ -37,4 +37,24 @@ class ClientSubscriptionDataServiceSpec extends UnitSpec with TestClientSubscrip
     }
   }
 
+  "retrieveSubscriptionData" should {
+    "return the model when the subscription data is successfully retrieved" in {
+      mockRetrieve(testNino)
+
+      val res = TestClientSubscriptionDataService.retrieveSubscriptionData(testNino)
+      await(res) shouldBe Some(testAgentBothSubscription)
+    }
+    "return the nothing when the subscription data cannot be found" in {
+      mockRetrieveNotFound(testNino)
+
+      val res = TestClientSubscriptionDataService.retrieveSubscriptionData(testNino)
+      await(res) shouldBe None
+    }
+    "return the failure when the storage fails" in {
+      mockRetrieveFailed(testNino)
+
+      val res = TestClientSubscriptionDataService.retrieveSubscriptionData(testNino)
+      intercept[Exception](await(res)) shouldBe testException
+    }
+  }
 }
