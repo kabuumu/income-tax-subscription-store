@@ -30,8 +30,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class ClientSubscriptionDataController @Inject()(authService: AuthService,
-                                                 clientSubscriptionService: ClientSubscriptionDataService,
-                                                 implicit val ec: ExecutionContext) extends BaseController {
+                                                 clientSubscriptionService: ClientSubscriptionDataService)
+                                                (implicit ec: ExecutionContext) extends BaseController {
 
   import authService._
 

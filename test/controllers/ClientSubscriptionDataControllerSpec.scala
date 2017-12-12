@@ -21,20 +21,18 @@ import play.api.mvc.Result
 import play.api.test.FakeRequest
 import services.mocks.{MockAuthService, MockClientSubscriptionDataService}
 import uk.gov.hmrc.play.test.UnitSpec
-import utils.MaterializerSupport
 import utils.TestConstants._
 import play.api.http.Status._
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class ClientSubscriptionDataControllerSpec extends UnitSpec with MaterializerSupport with MockClientSubscriptionDataService with MockAuthService {
+class ClientSubscriptionDataControllerSpec extends UnitSpec with MockClientSubscriptionDataService with MockAuthService {
 
   object TestClientSubscriptionDataController extends ClientSubscriptionDataController(
     mockAuthService,
-    mockClientSubscriptionDataService,
-    implicitly[ExecutionContext]
-  )
+    mockClientSubscriptionDataService
+  )(implicitly[ExecutionContext])
 
   s"store" should {
     "return CREATED when the agent submission is successfully stored against the nino" in {
