@@ -33,7 +33,7 @@ class AgentSubscriptionHoldingPenSpec extends UnitSpec with GuiceOneAppPerSuite 
 
   "store" should {
     "return the model when it is successfully inserted" in {
-      List(testAgentPropertySubscription, testAgentBothSubscription).foreach {
+      List(testAgentPropertyPersist, testAgentBothPersist).foreach {
         testModel =>
           withClue(s"Using model: $testModel") {
             val (insertRes, stored) = await(for {
@@ -52,8 +52,8 @@ class AgentSubscriptionHoldingPenSpec extends UnitSpec with GuiceOneAppPerSuite 
 
     "fail when a duplicate is created" in {
       val res = for {
-        _ <- TestAgentSubscriptionHoldingPen.store(testAgentPropertySubscription)
-        _ <- TestAgentSubscriptionHoldingPen.store(testAgentPropertySubscription)
+        _ <- TestAgentSubscriptionHoldingPen.store(testAgentPropertyPersist)
+        _ <- TestAgentSubscriptionHoldingPen.store(testAgentBothPersist)
       } yield ()
 
       intercept[Exception](await(res))
@@ -68,11 +68,11 @@ class AgentSubscriptionHoldingPenSpec extends UnitSpec with GuiceOneAppPerSuite 
 
     "return a AgentSubscriptionModel if there is data" in {
       val res = await(for {
-        insertRes <- TestAgentSubscriptionHoldingPen.store(testAgentPropertySubscription)
+        insertRes <- TestAgentSubscriptionHoldingPen.store(testAgentPropertyPersist)
         stored <- TestAgentSubscriptionHoldingPen.retrieve(testNino)
       } yield stored)
 
-      res shouldBe Some(testAgentPropertySubscription)
+      res shouldBe Some(testAgentPropertyPersist)
     }
   }
 }

@@ -18,16 +18,18 @@ package services
 
 import javax.inject.{Inject, Singleton}
 
-import models.AgentSubscriptionModel
+import models.{AgentSubscriptionModel, AgentSubscriptionPersistModel}
 import repositories.AgentSubscriptionHoldingPen
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 
 @Singleton
 class ClientSubscriptionDataService @Inject()(agentSubscriptionHoldingPen: AgentSubscriptionHoldingPen) {
 
-  def store(agentSubscriptionModel: AgentSubscriptionModel): Future[AgentSubscriptionModel] = agentSubscriptionHoldingPen.store(agentSubscriptionModel)
+  def store(nino: String, agentSubscriptionModel: AgentSubscriptionModel)(implicit ec: ExecutionContext): Future[AgentSubscriptionModel] =
+    agentSubscriptionHoldingPen.store(AgentSubscriptionPersistModel(nino, agentSubscriptionModel)).map(_.subscription)
 
-  def retrieveSubscriptionData(nino: String): Future[Option[AgentSubscriptionModel]] = agentSubscriptionHoldingPen.retrieve(nino)
+  def retrieveSubscriptionData(nino: String)(implicit ec: ExecutionContext): Future[Option[AgentSubscriptionModel]] =
+    agentSubscriptionHoldingPen.retrieve(nino).map(_.map(_.subscription))
 }

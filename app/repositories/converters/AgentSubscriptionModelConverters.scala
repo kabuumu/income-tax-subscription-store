@@ -18,11 +18,12 @@ package repositories.converters
 
 import java.time.Instant
 
-import models.{AgentSubscriptionModel, DateModel, IncomeSourceType}
+import models.{AgentSubscriptionModel, AgentSubscriptionPersistModel, DateModel, IncomeSourceType}
 import play.api.libs.json.{Json, _}
 
-object AgentSubscriptionModelConstants {
+object AgentSubscriptionPersistModelConstants {
   val ninoKey = "_id"
+  val subscriptionKey = "subscription"
   val arnKey = "arn"
   val incomeSourceKey = "incomeSource"
   val timestampKey = "creationTimestamp"
@@ -34,50 +35,57 @@ object AgentSubscriptionModelConstants {
   val cashOrAccrualsKey = "cashOrAccruals"
 }
 
-object AgentSubscriptionModelReads extends Reads[AgentSubscriptionModel] {
+object AgentSubscriptionPersistModelReads extends Reads[AgentSubscriptionPersistModel] {
 
-  import AgentSubscriptionModelConstants._
+  import AgentSubscriptionPersistModelConstants._
 
-  override def reads(json: JsValue): JsResult[AgentSubscriptionModel] = for {
+  override def reads(json: JsValue): JsResult[AgentSubscriptionPersistModel] = for {
     nino <- (json \ ninoKey).validate[String]
-    arn <- (json \ arnKey).validate[String]
-    incomeSource <- (json \ incomeSourceKey).validate[IncomeSourceType]
-    otherIncome <- (json \ otherIncomeKey).validate[Boolean]
-    currentPeriodIsPrior <- (json \ currentPeriodIsPriorKey).validateOpt[Boolean]
-    accountingPeriodStart <- (json \ accountingPeriodStartKey).validateOpt[DateModel]
-    accountingPeriodEnd <- (json \ accountingPeriodEndKey).validateOpt[DateModel]
-    tradingName <- (json \ tradingNameKey).validateOpt[String]
-    cashOrAccruals <- (json \ cashOrAccrualsKey).validateOpt[String]
-  } yield AgentSubscriptionModel(
-    nino = nino,
-    arn = arn,
-    incomeSource = incomeSource,
-    otherIncome = otherIncome,
-    currentPeriodIsPrior = currentPeriodIsPrior,
-    accountingPeriodStart = accountingPeriodStart,
-    accountingPeriodEnd = accountingPeriodEnd,
-    tradingName = tradingName,
-    cashOrAccruals = cashOrAccruals
+    sub = json \ subscriptionKey
+    arn <- (sub \ arnKey).validate[String]
+    incomeSource <- (sub \ incomeSourceKey).validate[IncomeSourceType]
+    otherIncome <- (sub \ otherIncomeKey).validate[Boolean]
+    currentPeriodIsPrior <- (sub \ currentPeriodIsPriorKey).validateOpt[Boolean]
+    accountingPeriodStart <- (sub \ accountingPeriodStartKey).validateOpt[DateModel]
+    accountingPeriodEnd <- (sub \ accountingPeriodEndKey).validateOpt[DateModel]
+    tradingName <- (sub \ tradingNameKey).validateOpt[String]
+    cashOrAccruals <- (sub \ cashOrAccrualsKey).validateOpt[String]
+  } yield AgentSubscriptionPersistModel(nino = nino,
+    AgentSubscriptionModel(
+      arn = arn,
+      incomeSource = incomeSource,
+      otherIncome = otherIncome,
+      currentPeriodIsPrior = currentPeriodIsPrior,
+      accountingPeriodStart = accountingPeriodStart,
+      accountingPeriodEnd = accountingPeriodEnd,
+      tradingName = tradingName,
+      cashOrAccruals = cashOrAccruals
+    )
   )
 }
 
 
-object AgentSubscriptionModelWrites extends OWrites[AgentSubscriptionModel] {
+object AgentSubscriptionPersistModelWrites extends OWrites[AgentSubscriptionPersistModel] {
 
-  import AgentSubscriptionModelConstants._
+  import AgentSubscriptionPersistModelConstants._
 
-  override def writes(model: AgentSubscriptionModel): JsObject = Json.obj(
-    ninoKey -> model.nino,
-    arnKey -> model.arn,
-    incomeSourceKey -> model.incomeSource,
-    otherIncomeKey -> model.otherIncome,
-    currentPeriodIsPriorKey -> model.currentPeriodIsPrior,
-    accountingPeriodStartKey -> model.accountingPeriodStart,
-    accountingPeriodEndKey -> model.accountingPeriodEnd,
-    tradingNameKey -> model.tradingName,
-    cashOrAccrualsKey -> model.cashOrAccruals,
-    timestampKey -> Json.obj("$date" -> Instant.now.toEpochMilli)
-  )
+  override def writes(model: AgentSubscriptionPersistModel): JsObject = {
+    val sub = model.subscription
+    Json.obj(
+      ninoKey -> model.nino,
+      subscriptionKey -> Json.obj(
+        arnKey -> sub.arn,
+        incomeSourceKey -> sub.incomeSource,
+        otherIncomeKey -> sub.otherIncome,
+        currentPeriodIsPriorKey -> sub.currentPeriodIsPrior,
+        accountingPeriodStartKey -> sub.accountingPeriodStart,
+        accountingPeriodEndKey -> sub.accountingPeriodEnd,
+        tradingNameKey -> sub.tradingName,
+        cashOrAccrualsKey -> sub.cashOrAccruals
+      ),
+      timestampKey -> Json.obj("$date" -> Instant.now.toEpochMilli)
+    )
+  }
 }
 
 

@@ -26,7 +26,7 @@ import services.ClientSubscriptionDataService
 import uk.gov.hmrc.play.test.UnitSpec
 import utils.TestConstants._
 
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 
 trait MockClientSubscriptionDataService extends UnitSpec with MockitoSugar with BeforeAndAfterEach {
@@ -37,17 +37,18 @@ trait MockClientSubscriptionDataService extends UnitSpec with MockitoSugar with 
     reset(mockClientSubscriptionDataService)
   }
 
-  private def mockStore(agentSubscriptionModel: AgentSubscriptionModel)(result: Future[AgentSubscriptionModel]): Unit =
-    when(mockClientSubscriptionDataService.store(ArgumentMatchers.eq(agentSubscriptionModel))).thenReturn(result)
+  private def mockStore(nino: String, agentSubscriptionModel: AgentSubscriptionModel)(result: Future[AgentSubscriptionModel]): Unit =
+    when(mockClientSubscriptionDataService.store(ArgumentMatchers.eq(nino), ArgumentMatchers.eq(agentSubscriptionModel))(ArgumentMatchers.any[ExecutionContext]))
+      .thenReturn(result)
 
   def mockRetrieve(nino: String)(result: Future[Option[AgentSubscriptionModel]]): Unit =
-    when(mockClientSubscriptionDataService.retrieveSubscriptionData(ArgumentMatchers.eq(nino))).thenReturn(result)
+    when(mockClientSubscriptionDataService.retrieveSubscriptionData(ArgumentMatchers.eq(nino))(ArgumentMatchers.any[ExecutionContext])).thenReturn(result)
 
-  def mockStoreSuccess(agentSubscriptionModel: AgentSubscriptionModel): Unit =
-    mockStore(agentSubscriptionModel)(Future.successful(agentSubscriptionModel))
+  def mockStoreSuccess(nino: String, agentSubscriptionModel: AgentSubscriptionModel): Unit =
+    mockStore(nino: String, agentSubscriptionModel)(Future.successful(agentSubscriptionModel))
 
-  def mockStoreFailed(agentSubscriptionModel: AgentSubscriptionModel): Unit =
-    mockStore(agentSubscriptionModel)(Future.failed(testException))
+  def mockStoreFailed(nino: String, agentSubscriptionModel: AgentSubscriptionModel): Unit =
+    mockStore(nino: String, agentSubscriptionModel)(Future.failed(testException))
 
   def mockRetrieveFound(nino: String)(agentSubscriptionModel: AgentSubscriptionModel): Unit =
     mockRetrieve(nino)(Future.successful(Some(agentSubscriptionModel)))

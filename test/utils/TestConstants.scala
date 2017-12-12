@@ -16,7 +16,7 @@
 
 package utils
 
-import models.{AgentSubscriptionModel, Both, DateModel, Property}
+import models._
 import uk.gov.hmrc.domain.Generator
 
 
@@ -32,14 +32,17 @@ object TestConstants {
   val testCashOrAccurals = "cash"
 
   lazy val testAgentPropertySubscription = AgentSubscriptionModel(
-    nino = testNino,
     arn = testArn,
     incomeSource = Property,
     otherIncome = false
   )
 
+  lazy val testAgentPropertyPersist = AgentSubscriptionPersistModel(
+    testNino,
+    testAgentPropertySubscription
+  )
+
   lazy val testAgentBothSubscription = AgentSubscriptionModel(
-    nino = testNino,
     arn = testArn,
     incomeSource = Both,
     otherIncome = false,
@@ -49,6 +52,12 @@ object TestConstants {
     tradingName = Some(testTradingName),
     cashOrAccruals = Some(testCashOrAccurals)
   )
+
+  lazy val testAgentBothPersist = AgentSubscriptionPersistModel(
+    testNino,
+    testAgentBothSubscription
+  )
+
 
   val testException = new Exception("an error")
 

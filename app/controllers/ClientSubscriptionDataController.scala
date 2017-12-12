@@ -35,12 +35,12 @@ class ClientSubscriptionDataController @Inject()(authService: AuthService,
 
   import authService._
 
-  def store(): Action[JsValue] = Action.async(parse.json) { implicit request =>
+  def store(nino: String): Action[JsValue] = Action.async(parse.json) { implicit request =>
     authorised() {
       val json = request.body
       Json.fromJson[AgentSubscriptionModel](json) match {
         case JsSuccess(submission, _) =>
-          clientSubscriptionService.store(submission) map (storedResult => Created(Json.toJson(storedResult)))
+          clientSubscriptionService.store(nino, submission) map (storedResult => Created(Json.toJson(storedResult)))
         case JsError(failure) =>
           Logger.debug("ClientSubscriptionDataController.store input failed parsing: " + failure.toString())
           Future.successful(BadRequest)

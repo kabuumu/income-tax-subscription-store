@@ -16,16 +16,16 @@
 
 package controllers
 
+import play.api.http.Status._
 import play.api.libs.json.{JsValue, Json}
 import play.api.mvc.Result
 import play.api.test.FakeRequest
 import services.mocks.{MockAuthService, MockClientSubscriptionDataService}
 import uk.gov.hmrc.play.test.UnitSpec
 import utils.TestConstants._
-import play.api.http.Status._
 
-import scala.concurrent.{ExecutionContext, Future}
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.{ExecutionContext, Future}
 
 class ClientSubscriptionDataControllerSpec extends UnitSpec with MockClientSubscriptionDataService with MockAuthService {
 
@@ -37,33 +37,33 @@ class ClientSubscriptionDataControllerSpec extends UnitSpec with MockClientSubsc
   s"store" should {
     "return CREATED when the agent submission is successfully stored against the nino" in {
       mockAuthSuccess()
-      mockStoreSuccess(testAgentBothSubscription)
+      mockStoreSuccess(testNino, testAgentBothSubscription)
 
       val request: FakeRequest[JsValue] = FakeRequest().withBody(Json.toJson(testAgentBothSubscription))
 
-      val res: Future[Result] = TestClientSubscriptionDataController.store()(request)
+      val res: Future[Result] = TestClientSubscriptionDataController.store(testNino)(request)
 
       status(res) shouldBe CREATED
     }
 
     "fail if the storage fails" in {
       mockAuthSuccess()
-      mockStoreFailed(testAgentBothSubscription)
+      mockStoreFailed(testNino, testAgentBothSubscription)
 
       val request: FakeRequest[JsValue] = FakeRequest().withBody(Json.toJson(testAgentBothSubscription))
 
-      val res: Future[Result] = TestClientSubscriptionDataController.store()(request)
+      val res: Future[Result] = TestClientSubscriptionDataController.store(testNino)(request)
 
       intercept[Exception](await(res)) shouldBe testException
     }
 
     "return a bad request when the json cannot be parsed" in {
       mockAuthSuccess()
-      mockStoreFailed(testAgentBothSubscription)
+      mockStoreFailed(testNino, testAgentBothSubscription)
 
       val request: FakeRequest[JsValue] = FakeRequest().withBody(Json.obj())
 
-      val res: Future[Result] = TestClientSubscriptionDataController.store()(request)
+      val res: Future[Result] = TestClientSubscriptionDataController.store(testNino)(request)
 
       status(res) shouldBe BAD_REQUEST
     }
