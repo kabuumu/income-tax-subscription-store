@@ -38,7 +38,7 @@ class ClientSubscriptionDataControllerISpec extends ComponentSpecBase with Befor
     await(TestAgentSubscriptionHoldingPen.drop)
   }
 
-  "calling /client-subscription-data" should {
+  "calling POST /client-subscription-data" should {
     "return Created when the nino does not already exist" in {
       Given("I setup the wiremock stubs")
       AuthStub.stubAuthSuccess()
@@ -65,6 +65,42 @@ class ClientSubscriptionDataControllerISpec extends ComponentSpecBase with Befor
       Then("The result should have a HTTP status of INTERNAL_SERVER_ERROR")
       res should have(
         httpStatus(INTERNAL_SERVER_ERROR)
+      )
+    }
+  }
+
+
+  "calling GET /client-subscription-data/:nino" should {
+    "return OK when the nino matches already stored subscription data" in {
+      Given("I setup the wiremock stubs")
+      AuthStub.stubAuthSuccess()
+
+      val insert = TestAgentSubscriptionHoldingPen.store(testAgentPropertySubscription)
+      await(insert)
+
+      When(s"I call GET /client-subscription-data/$testNino")
+      val res = IncomeTaxSubscriptionStore.retrieve(testNino)
+
+      Then("The result should have a HTTP status of OK")
+      res should have(
+        httpStatus(OK)
+      )
+    }
+
+    "return BadRequest when the subscription data for that nino does not match" in {
+      Given("I setup the wiremock stubs")
+      AuthStub.stubAuthSuccess()
+
+      val insert = TestAgentSubscriptionHoldingPen.store(testAgentPropertySubscription)
+      await(insert)
+
+      val nonMatchingNino = "AA000000A"
+      When(s"I call GET /client-subscription-data/$nonMatchingNino")
+      val res = IncomeTaxSubscriptionStore.retrieve(nonMatchingNino)
+
+      Then("The result should have a HTTP status of BAD_REQUEST")
+      res should have(
+        httpStatus(BAD_REQUEST)
       )
     }
   }
