@@ -87,7 +87,7 @@ class ClientSubscriptionDataControllerISpec extends ComponentSpecBase with Befor
       )
     }
 
-    "return BadRequest when the subscription data for that nino does not match" in {
+    "return NotFound when the subscription data for that nino does not match" in {
       Given("I setup the wiremock stubs")
       AuthStub.stubAuthSuccess()
 
@@ -98,9 +98,9 @@ class ClientSubscriptionDataControllerISpec extends ComponentSpecBase with Befor
       When(s"I call GET /client-subscription-data/$nonMatchingNino")
       val res = IncomeTaxSubscriptionStore.retrieve(nonMatchingNino)
 
-      Then("The result should have a HTTP status of BAD_REQUEST")
+      Then("The result should have a HTTP status of NotFound")
       res should have(
-        httpStatus(BAD_REQUEST)
+        httpStatus(NOT_FOUND)
       )
     }
   }

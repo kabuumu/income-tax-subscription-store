@@ -54,7 +54,7 @@ class ClientSubscriptionDataController @Inject()(authService: AuthService,
       authorised() {
         clientSubscriptionService.retrieveSubscriptionData(nino) map {
           case Some(subscriptionData) => Ok(Json.toJson(subscriptionData))
-          case None => BadRequest
+          case None => NotFound
         }
       }
     }

@@ -82,13 +82,13 @@ class ClientSubscriptionDataControllerSpec extends UnitSpec with MaterializerSup
       status(res) shouldBe OK
     }
 
-    "return 'BadRequest' if the client subscription data cannot be found" in {
+    "return 'NotFound' if the client subscription data cannot be found" in {
       mockAuthSuccess()
       mockRetrieveNotFound(testNino)
 
       val res: Future[Result] = TestClientSubscriptionDataController.retrieveSubscriptionData(testNino)(FakeRequest())
 
-      status(res) shouldBe BAD_REQUEST
+      status(res) shouldBe NOT_FOUND
     }
 
     "fail if exception occurs" in {
