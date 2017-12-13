@@ -79,7 +79,8 @@ trait ComponentSpecBase extends UnitSpec
       )
     }
 
-    def store(body: AgentSubscriptionModel): WSResponse = post(s"/client-subscription-data", body)
+    def store(nino: String)(body: AgentSubscriptionModel): WSResponse = post(s"/client-subscription-data/$nino", body)
+
     def retrieve(nino: String): WSResponse = get(s"/client-subscription-data/$nino")
 
   }

@@ -1,6 +1,6 @@
 # microservice specific routes
 
-POST        /client-subscription-data              @controllers.ClientSubscriptionDataController.store
+POST        /client-subscription-data/:nino        @controllers.ClientSubscriptionDataController.store(nino: String)
 
 GET         /client-subscription-data/:nino        @controllers.ClientSubscriptionDataController.retrieveSubscriptionData(nino: String)
 

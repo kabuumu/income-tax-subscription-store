@@ -43,7 +43,7 @@ class ClientSubscriptionDataControllerSpec extends ComponentSpecBase {
       AuthStub.stubAuthSuccess()
 
       When("I call POST /client-subscription-data")
-      val res = IncomeTaxSubscriptionStore.store(testAgentBothSubscription)
+      val res = IncomeTaxSubscriptionStore.store(testNino)(testAgentBothSubscription)
 
       Then("The result should have a HTTP status of CREATED")
       res should have(
@@ -55,11 +55,11 @@ class ClientSubscriptionDataControllerSpec extends ComponentSpecBase {
       Given("I setup the wiremock stubs")
       AuthStub.stubAuthSuccess()
 
-      val insert = TestAgentSubscriptionHoldingPen.store(testAgentPropertySubscription)
+      val insert = TestAgentSubscriptionHoldingPen.store(testAgentPropertyPersist)
       await(insert)
 
       When("I call POST /client-subscription-data")
-      val res = IncomeTaxSubscriptionStore.store(testAgentBothSubscription)
+      val res = IncomeTaxSubscriptionStore.store(testNino)(testAgentBothSubscription)
 
       Then("The result should have a HTTP status of INTERNAL_SERVER_ERROR")
       res should have(
@@ -74,7 +74,7 @@ class ClientSubscriptionDataControllerSpec extends ComponentSpecBase {
       Given("I setup the wiremock stubs")
       AuthStub.stubAuthSuccess()
 
-      val insert = TestAgentSubscriptionHoldingPen.store(testAgentPropertySubscription)
+      val insert = TestAgentSubscriptionHoldingPen.store(testAgentPropertyPersist)
       await(insert)
 
       When(s"I call GET /client-subscription-data/$testNino")
@@ -90,7 +90,7 @@ class ClientSubscriptionDataControllerSpec extends ComponentSpecBase {
       Given("I setup the wiremock stubs")
       AuthStub.stubAuthSuccess()
 
-      val insert = TestAgentSubscriptionHoldingPen.store(testAgentPropertySubscription)
+      val insert = TestAgentSubscriptionHoldingPen.store(testAgentPropertyPersist)
       await(insert)
 
       val nonMatchingNino = "AA000000A"

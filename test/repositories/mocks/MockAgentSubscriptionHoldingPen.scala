@@ -16,7 +16,7 @@
 
 package repositories.mocks
 
-import models.AgentSubscriptionModel
+import models.AgentSubscriptionPersistModel
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import org.scalatest.mockito.MockitoSugar
@@ -28,19 +28,19 @@ import scala.concurrent.Future
 trait MockAgentSubscriptionHoldingPen extends MockitoSugar {
   val mockAgentSubscriptionHoldingPen = mock[AgentSubscriptionHoldingPen]
 
-  def mockStore(subscription: AgentSubscriptionModel): Unit = {
+  def mockStore(subscription: AgentSubscriptionPersistModel): Unit = {
     when(mockAgentSubscriptionHoldingPen.store(ArgumentMatchers.eq(subscription)))
       .thenReturn(Future.successful(subscription))
   }
 
-  def mockStoreFailed(subscription: AgentSubscriptionModel): Unit = {
+  def mockStoreFailed(subscription: AgentSubscriptionPersistModel): Unit = {
     when(mockAgentSubscriptionHoldingPen.store(ArgumentMatchers.eq(subscription)))
       .thenReturn(Future.failed(testException))
   }
 
   def mockRetrieve(nino: String): Unit = {
     when(mockAgentSubscriptionHoldingPen.retrieve(ArgumentMatchers.eq(nino)))
-      .thenReturn(Future.successful(Some(testAgentBothSubscription)))
+      .thenReturn(Future.successful(Some(testAgentBothPersist)))
   }
 
   def mockRetrieveNotFound(nino: String): Unit = {

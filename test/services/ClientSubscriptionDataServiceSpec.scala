@@ -18,21 +18,23 @@ package services
 
 import services.mocks.TestClientSubscriptionDataService
 import uk.gov.hmrc.play.test.UnitSpec
-import utils.TestConstants.{testAgentBothSubscription, testException, testNino}
+import utils.TestConstants.{testAgentBothSubscription, _}
+
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class ClientSubscriptionDataServiceSpec extends UnitSpec with TestClientSubscriptionDataService {
 
   "store" should {
     "return the model when it is successfully stored" in {
-      mockStore(testAgentBothSubscription)
+      mockStore(testAgentBothPersist)
 
-      val res = TestClientSubscriptionDataService.store(testAgentBothSubscription)
+      val res = TestClientSubscriptionDataService.store(testNino, testAgentBothSubscription)
       await(res) shouldBe testAgentBothSubscription
     }
     "return the failure when the storage fails" in {
-      mockStoreFailed(testAgentBothSubscription)
+      mockStoreFailed(testAgentBothPersist)
 
-      val res = TestClientSubscriptionDataService.store(testAgentBothSubscription)
+      val res = TestClientSubscriptionDataService.store(testNino, testAgentBothSubscription)
       intercept[Exception](await(res)) shouldBe testException
     }
   }

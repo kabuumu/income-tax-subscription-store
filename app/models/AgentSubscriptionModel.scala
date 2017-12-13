@@ -20,7 +20,6 @@ import play.api.libs.json.Json
 
 
 case class AgentSubscriptionModel(arn: String,
-                                  nino: String,
                                   incomeSource: IncomeSourceType,
                                   otherIncome: Boolean,
                                   currentPeriodIsPrior: Option[Boolean] = None,

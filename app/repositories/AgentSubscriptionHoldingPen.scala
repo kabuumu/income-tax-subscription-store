@@ -20,13 +20,13 @@ import java.util.concurrent.TimeUnit
 import javax.inject.{Inject, Singleton}
 
 import config.AppConfig
-import models.AgentSubscriptionModel
+import models.{AgentSubscriptionModel, AgentSubscriptionPersistModel}
 import play.api.libs.json.OFormat
 import play.modules.reactivemongo.ReactiveMongoComponent
 import reactivemongo.api.indexes.{Index, IndexType}
 import reactivemongo.api.indexes.IndexType.Ascending
 import reactivemongo.bson.{BSONDocument, BSONObjectID}
-import repositories.converters.{AgentSubscriptionModelConstants, AgentSubscriptionModelReads, AgentSubscriptionModelWrites}
+import repositories.converters.{AgentSubscriptionPersistModelConstants, AgentSubscriptionPersistModelReads, AgentSubscriptionPersistModelWrites}
 import uk.gov.hmrc.mongo.ReactiveRepository
 import uk.gov.hmrc.mongo.json.ReactiveMongoFormats
 
@@ -34,24 +34,24 @@ import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
 class AgentSubscriptionHoldingPen @Inject()(config: AppConfig)(implicit mongo: ReactiveMongoComponent, ec: ExecutionContext)
-  extends ReactiveRepository[AgentSubscriptionModel, BSONObjectID](
+  extends ReactiveRepository[AgentSubscriptionPersistModel, BSONObjectID](
     "agentSubscriptionHoldingPen",
     mongo.mongoConnector.db,
-    OFormat(AgentSubscriptionModelReads, AgentSubscriptionModelWrites),
+    OFormat(AgentSubscriptionPersistModelReads, AgentSubscriptionPersistModelWrites),
     ReactiveMongoFormats.objectIdFormats
   ) {
 
-  def store(key: AgentSubscriptionModel): Future[AgentSubscriptionModel] = {
+  def store(key: AgentSubscriptionPersistModel): Future[AgentSubscriptionPersistModel] = {
     insert(key) map (_ => key)
   }
 
   //TODO decide what to do if there's more than one, e.g. from different agents
-  def retrieve(nino: String): Future[Option[AgentSubscriptionModel]] = {
-    find(AgentSubscriptionModelConstants.ninoKey -> nino) map (_.headOption)
+  def retrieve(nino: String): Future[Option[AgentSubscriptionPersistModel]] = {
+    find(AgentSubscriptionPersistModelConstants.ninoKey -> nino) map (_.headOption)
   }
 
   private lazy val ttlIndex = Index(
-    Seq((AgentSubscriptionModelConstants.timestampKey, IndexType(Ascending.value))),
+    Seq((AgentSubscriptionPersistModelConstants.timestampKey, IndexType(Ascending.value))),
     name = Some("agentSubscriptionExpires"),
     unique = false,
     background = false,
