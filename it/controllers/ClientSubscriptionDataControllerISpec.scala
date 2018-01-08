@@ -26,7 +26,7 @@ import repositories.AgentSubscriptionHoldingPen
 
 import scala.concurrent.ExecutionContext
 
-class ClientSubscriptionDataControllerSpec extends ComponentSpecBase {
+class ClientSubscriptionDataControllerISpec extends ComponentSpecBase {
   implicit lazy val mongo = app.injector.instanceOf[ReactiveMongoComponent]
   implicit lazy val ec = app.injector.instanceOf[ExecutionContext]
   lazy val appConfig = app.injector.instanceOf[AppConfig]
