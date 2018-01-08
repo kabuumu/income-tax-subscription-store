@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 HM Revenue & Customs
+ * Copyright 2018 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package services
 
+import reactivemongo.api.commands.DefaultWriteResult
 import services.mocks.TestClientSubscriptionDataService
 import uk.gov.hmrc.play.test.UnitSpec
 import utils.TestConstants.{testAgentBothSubscription, _}
@@ -56,6 +57,23 @@ class ClientSubscriptionDataServiceSpec extends UnitSpec with TestClientSubscrip
       mockRetrieveFailed(testNino)
 
       val res = TestClientSubscriptionDataService.retrieveSubscriptionData(testNino)
+      intercept[Exception](await(res)) shouldBe testException
+    }
+  }
+
+  "delete" should {
+    "return the the write result from calling the repo " in {
+      val testWriteResult = DefaultWriteResult(ok = true, 1, Nil, None, None, None)
+      mockDelete(testNino)(testWriteResult)
+
+      val res = TestClientSubscriptionDataService.delete(testNino)
+      await(res) shouldBe testWriteResult
+    }
+
+    "return the failure when the storage fails" in {
+      mockDeleteFailed(testNino)
+
+      val res = TestClientSubscriptionDataService.delete(testNino)
       intercept[Exception](await(res)) shouldBe testException
     }
   }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 HM Revenue & Customs
+ * Copyright 2018 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package services
 import javax.inject.{Inject, Singleton}
 
 import models.{AgentSubscriptionModel, AgentSubscriptionPersistModel}
+import reactivemongo.api.commands.WriteResult
 import repositories.AgentSubscriptionHoldingPen
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -32,4 +33,7 @@ class ClientSubscriptionDataService @Inject()(agentSubscriptionHoldingPen: Agent
 
   def retrieveSubscriptionData(nino: String)(implicit ec: ExecutionContext): Future[Option[AgentSubscriptionModel]] =
     agentSubscriptionHoldingPen.retrieve(nino).map(_.map(_.subscription))
+
+  def delete(nino: String)(implicit ec: ExecutionContext): Future[WriteResult] =
+    agentSubscriptionHoldingPen.delete(nino)
 }

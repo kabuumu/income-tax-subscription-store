@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 HM Revenue & Customs
+ * Copyright 2018 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.mockito.MockitoSugar
+import reactivemongo.api.commands.{DefaultWriteResult, WriteResult}
 import repositories.mocks.MockAgentSubscriptionHoldingPen
 import services.ClientSubscriptionDataService
 import uk.gov.hmrc.play.test.UnitSpec
@@ -41,7 +42,7 @@ trait MockClientSubscriptionDataService extends UnitSpec with MockitoSugar with 
     when(mockClientSubscriptionDataService.store(ArgumentMatchers.eq(nino), ArgumentMatchers.eq(agentSubscriptionModel))(ArgumentMatchers.any[ExecutionContext]))
       .thenReturn(result)
 
-  def mockRetrieve(nino: String)(result: Future[Option[AgentSubscriptionModel]]): Unit =
+  private def mockRetrieve(nino: String)(result: Future[Option[AgentSubscriptionModel]]): Unit =
     when(mockClientSubscriptionDataService.retrieveSubscriptionData(ArgumentMatchers.eq(nino))(ArgumentMatchers.any[ExecutionContext])).thenReturn(result)
 
   def mockStoreSuccess(nino: String, agentSubscriptionModel: AgentSubscriptionModel): Unit =
@@ -58,6 +59,15 @@ trait MockClientSubscriptionDataService extends UnitSpec with MockitoSugar with 
 
   def mockRetrieveFailure(nino: String): Unit =
     mockRetrieve(nino)(Future.failed(testException))
+
+  private def mockDelete(nino: String)(result: Future[WriteResult]): Unit =
+    when(mockClientSubscriptionDataService.delete(ArgumentMatchers.eq(nino))(ArgumentMatchers.any[ExecutionContext])).thenReturn(result)
+
+  def mockDeleteOk(nino: String): Unit =
+    mockDelete(nino)(Future.successful(DefaultWriteResult(ok = true, 1, Nil, None, None, None)))
+
+  def mockDeleteFailure(nino: String): Unit =
+    mockDelete(nino)(Future.failed(testException))
 
 }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 HM Revenue & Customs
+ * Copyright 2018 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -94,6 +94,28 @@ class ClientSubscriptionDataControllerSpec extends UnitSpec with MockClientSubsc
       mockRetrieveFailure(testNino)
 
       val res: Future[Result] = TestClientSubscriptionDataController.retrieveSubscriptionData(testNino)(FakeRequest())
+
+      intercept[Exception](await(res)) shouldBe testException
+
+    }
+  }
+
+  "delete" should {
+    "return 'Ok' if the delete operation returned true for ok" in {
+      mockAuthSuccess()
+      mockDeleteOk(testNino)
+
+      val res: Future[Result] = TestClientSubscriptionDataController.delete(testNino)(FakeRequest())
+
+      status(res) shouldBe NO_CONTENT
+    }
+
+
+    "fail if exception occurs" in {
+      mockAuthSuccess()
+      mockDeleteFailure(testNino)
+
+      val res: Future[Result] = TestClientSubscriptionDataController.delete(testNino)(FakeRequest())
 
       intercept[Exception](await(res)) shouldBe testException
 
