@@ -43,7 +43,7 @@ class ClientSubscriptionDataControllerSpec extends ComponentSpecBase {
       AuthStub.stubAuthSuccess()
 
       When("I call POST /client-subscription-data")
-      val res = IncomeTaxSubscriptionStore.store(testNino)(testAgentBothSubscription)
+      val res = IncomeTaxSubscriptionStore.storeSubscription(testNino)(testAgentBothSubscription)
 
       Then("The result should have a HTTP status of CREATED")
       res should have(
@@ -59,7 +59,7 @@ class ClientSubscriptionDataControllerSpec extends ComponentSpecBase {
       await(insert)
 
       When("I call POST /client-subscription-data")
-      val res = IncomeTaxSubscriptionStore.store(testNino)(testAgentBothSubscription)
+      val res = IncomeTaxSubscriptionStore.storeSubscription(testNino)(testAgentBothSubscription)
 
       Then("The result should have a HTTP status of INTERNAL_SERVER_ERROR")
       res should have(
@@ -78,7 +78,7 @@ class ClientSubscriptionDataControllerSpec extends ComponentSpecBase {
       await(insert)
 
       When(s"I call GET /client-subscription-data/$testNino")
-      val res = IncomeTaxSubscriptionStore.retrieve(testNino)
+      val res = IncomeTaxSubscriptionStore.retrieveSubscription(testNino)
 
       Then("The result should have a HTTP status of OK")
       res should have(
@@ -95,11 +95,29 @@ class ClientSubscriptionDataControllerSpec extends ComponentSpecBase {
 
       val nonMatchingNino = "AA000000A"
       When(s"I call GET /client-subscription-data/$nonMatchingNino")
-      val res = IncomeTaxSubscriptionStore.retrieve(nonMatchingNino)
+      val res = IncomeTaxSubscriptionStore.retrieveSubscription(nonMatchingNino)
 
       Then("The result should have a HTTP status of NotFound")
       res should have(
         httpStatus(NOT_FOUND)
+      )
+    }
+  }
+
+  "calling DELETE /client-subscription-data/:nino" should {
+    "return NO_CONTENT if the call is successful" in {
+      Given("I setup the wiremock stubs")
+      AuthStub.stubAuthSuccess()
+
+      val insert = TestAgentSubscriptionHoldingPen.store(testAgentPropertyPersist)
+      await(insert)
+
+      When(s"I call DELETE /client-subscription-data/$testNino")
+      val res = IncomeTaxSubscriptionStore.deleteSubscription(testNino)
+
+      Then("The result should have a HTTP status of NO_CONTENT")
+      res should have(
+        httpStatus(NO_CONTENT)
       )
     }
   }
