@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 HM Revenue & Customs
+ * Copyright 2018 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,11 +20,12 @@ import java.util.concurrent.TimeUnit
 import javax.inject.{Inject, Singleton}
 
 import config.AppConfig
-import models.{AgentSubscriptionModel, AgentSubscriptionPersistModel}
+import models.AgentSubscriptionPersistModel
 import play.api.libs.json.OFormat
 import play.modules.reactivemongo.ReactiveMongoComponent
-import reactivemongo.api.indexes.{Index, IndexType}
+import reactivemongo.api.commands.WriteResult
 import reactivemongo.api.indexes.IndexType.Ascending
+import reactivemongo.api.indexes.{Index, IndexType}
 import reactivemongo.bson.{BSONDocument, BSONObjectID}
 import repositories.converters.{AgentSubscriptionPersistModelConstants, AgentSubscriptionPersistModelReads, AgentSubscriptionPersistModelWrites}
 import uk.gov.hmrc.mongo.ReactiveRepository
@@ -48,6 +49,10 @@ class AgentSubscriptionHoldingPen @Inject()(config: AppConfig)(implicit mongo: R
   //TODO decide what to do if there's more than one, e.g. from different agents
   def retrieve(nino: String): Future[Option[AgentSubscriptionPersistModel]] = {
     find(AgentSubscriptionPersistModelConstants.ninoKey -> nino) map (_.headOption)
+  }
+
+  def delete(nino: String): Future[WriteResult] = {
+    remove(AgentSubscriptionPersistModelConstants.ninoKey -> nino)
   }
 
   private lazy val ttlIndex = Index(

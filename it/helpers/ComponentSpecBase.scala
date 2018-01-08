@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 HM Revenue & Customs
+ * Copyright 2018 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,6 +69,8 @@ trait ComponentSpecBase extends UnitSpec
   object IncomeTaxSubscriptionStore {
     def get(uri: String): WSResponse = await(buildClient(uri).get())
 
+    def delete(uri: String): WSResponse = await(buildClient(uri).delete())
+
     def post[T](uri: String, body: T)(implicit writes: Writes[T]): WSResponse = {
       await(
         buildClient(uri)
@@ -79,9 +81,11 @@ trait ComponentSpecBase extends UnitSpec
       )
     }
 
-    def store(nino: String)(body: AgentSubscriptionModel): WSResponse = post(s"/client-subscription-data/$nino", body)
+    def storeSubscription(nino: String)(body: AgentSubscriptionModel): WSResponse = post(s"/client-subscription-data/$nino", body)
 
-    def retrieve(nino: String): WSResponse = get(s"/client-subscription-data/$nino")
+    def retrieveSubscription(nino: String): WSResponse = get(s"/client-subscription-data/$nino")
+
+    def deleteSubscription(nino: String): WSResponse = delete(s"/client-subscription-data/$nino")
 
   }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 HM Revenue & Customs
+ * Copyright 2018 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import models.AgentSubscriptionPersistModel
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito._
 import org.scalatest.mockito.MockitoSugar
+import reactivemongo.api.commands.{DefaultWriteResult, WriteResult}
 import repositories.AgentSubscriptionHoldingPen
 import utils.TestConstants._
 
@@ -52,4 +53,15 @@ trait MockAgentSubscriptionHoldingPen extends MockitoSugar {
     when(mockAgentSubscriptionHoldingPen.retrieve(ArgumentMatchers.eq(nino)))
       .thenReturn(Future.failed(testException))
   }
+
+  def mockDelete(nino: String)(result:WriteResult): Unit = {
+    when(mockAgentSubscriptionHoldingPen.delete(ArgumentMatchers.eq(nino)))
+      .thenReturn(Future.successful(result))
+  }
+
+  def mockDeleteFailed(nino: String): Unit = {
+    when(mockAgentSubscriptionHoldingPen.delete(ArgumentMatchers.eq(nino)))
+      .thenReturn(Future.failed(testException))
+  }
+
 }
