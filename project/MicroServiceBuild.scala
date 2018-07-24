@@ -8,9 +8,9 @@ object MicroServiceBuild extends Build with MicroService {
 
   override lazy val appDependencies: Seq[ModuleID] = compile ++ test() ++ integrationTest()
 
-  private val domainVersion = "5.0.0"
-  private val bootstrapVersion = "1.4.0"
-  private val reactiveMongoVersion = "6.1.0"
+  private val domainVersion = "5.2.0"
+  private val bootstrapVersion = "1.7.0"
+  private val reactiveMongoVersion = "6.2.0"
 
   private val hmrcTestVersion = "3.0.0"
   private val scalaTestVersion = "3.0.1"
