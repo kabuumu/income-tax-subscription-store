@@ -17,9 +17,8 @@
 package config
 
 import javax.inject.{Inject, Singleton}
-
-import play.api.{Application, Configuration}
-import uk.gov.hmrc.play.config.ServicesConfig
+import play.api.Configuration
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 trait AppConfig {
   val authURL: String
@@ -27,17 +26,13 @@ trait AppConfig {
 }
 
 @Singleton
-class MicroserviceAppConfig @Inject()(val app: Application) extends AppConfig with ServicesConfig {
-  val configuration = app.configuration
-  override val mode = app.mode
+class MicroserviceAppConfig @Inject()(configuration: Configuration, servicesConfig: ServicesConfig) extends AppConfig {
 
-  override lazy val authURL = baseUrl("auth")
+  override lazy val authURL = servicesConfig.baseUrl("auth")
 
   override val agentHoldingPenExpiryDays: Int = {
     val key = "agent-holding-pen.expiry-days"
-    configuration.getInt(key)
-      .getOrElse(throw new Exception(s"Missing configuration key: $key"))
+    configuration.getOptional[Int](key).getOrElse(throw new Exception(s"Missing configuration key: $key"))
   }
 
-  override protected def runModeConfiguration: Configuration = configuration
 }

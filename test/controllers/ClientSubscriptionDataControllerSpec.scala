@@ -23,6 +23,7 @@ import play.api.test.FakeRequest
 import services.mocks.{MockAuthService, MockClientSubscriptionDataService}
 import uk.gov.hmrc.play.test.UnitSpec
 import utils.TestConstants._
+import play.api.test.Helpers.stubControllerComponents
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.{ExecutionContext, Future}
@@ -31,7 +32,8 @@ class ClientSubscriptionDataControllerSpec extends UnitSpec with MockClientSubsc
 
   object TestClientSubscriptionDataController extends ClientSubscriptionDataController(
     mockAuthService,
-    mockClientSubscriptionDataService
+    mockClientSubscriptionDataService,
+    stubControllerComponents()
   )(implicitly[ExecutionContext])
 
   s"store" should {

@@ -17,21 +17,21 @@
 package controllers
 
 import javax.inject.{Inject, Singleton}
-
 import models.AgentSubscriptionModel
 import play.api.Logger
 import play.api.libs.json.{JsError, JsSuccess, JsValue, Json}
-import play.api.mvc.{Action, AnyContent}
+import play.api.mvc.{Action, AnyContent, ControllerComponents}
 import services.{AuthService, ClientSubscriptionDataService}
-import uk.gov.hmrc.play.bootstrap.controller.BaseController
+import uk.gov.hmrc.play.bootstrap.controller.BackendController
 
 import scala.concurrent.{ExecutionContext, Future}
 
-
 @Singleton
-class ClientSubscriptionDataController @Inject()(authService: AuthService,
-                                                 clientSubscriptionService: ClientSubscriptionDataService)
-                                                (implicit ec: ExecutionContext) extends BaseController {
+ class ClientSubscriptionDataController @Inject()(authService: AuthService,
+                                                  clientSubscriptionService: ClientSubscriptionDataService,
+                                                  cc: ControllerComponents
+                                                 )
+                                                 (implicit ec: ExecutionContext) extends BackendController(cc) {
 
   import authService._
 
