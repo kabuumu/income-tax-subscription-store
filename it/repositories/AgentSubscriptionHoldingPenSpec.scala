@@ -18,13 +18,13 @@ package repositories
 
 import helpers.IntegrationTestConstants._
 import org.scalatest.BeforeAndAfterEach
-import org.scalatestplus.play.guice.GuiceOneAppPerSuite
+import org.scalatestplus.play.guice.GuiceOneServerPerSuite
 import uk.gov.hmrc.domain.Generator
 import uk.gov.hmrc.play.test.UnitSpec
 
 import scala.concurrent.ExecutionContext
 
-class AgentSubscriptionHoldingPenSpec extends UnitSpec with GuiceOneAppPerSuite with BeforeAndAfterEach {
+class AgentSubscriptionHoldingPenSpec extends UnitSpec with GuiceOneServerPerSuite with BeforeAndAfterEach {
   val TestAgentSubscriptionHoldingPen = app.injector.instanceOf[AgentSubscriptionHoldingPen]
   implicit val ec = app.injector.instanceOf[ExecutionContext]
 

@@ -74,7 +74,7 @@ trait ComponentSpecBase extends UnitSpec
     def post[T](uri: String, body: T)(implicit writes: Writes[T]): WSResponse = {
       await(
         buildClient(uri)
-          .withHeaders(
+          .withHttpHeaders(
             "Content-Type" -> "application/json"
           )
           .post(writes.writes(body).toString())
